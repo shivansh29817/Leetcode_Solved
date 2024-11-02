@@ -3,7 +3,7 @@ class Solution {
         if(!root) return;
         
         dfs(root -> left, ans, pre);
-        ans = min(ans, root -> val - pre);
+        ans =min(ans, root -> val - pre);
         pre = root -> val;
         dfs(root -> right, ans, pre); 
     }
