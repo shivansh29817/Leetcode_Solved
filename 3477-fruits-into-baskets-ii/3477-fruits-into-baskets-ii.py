@@ -1,15 +1,10 @@
-from typing import List
-
 class Solution:
     def numOfUnplacedFruits(self, fruits: List[int], baskets: List[int]) -> int:
-        n = len(fruits)
-        alloted = 0
-
-        for i in range(n):
-            for j in range(n):
-                if fruits[i] <= baskets[j]:
-                    alloted += 1
-                    baskets[j] = -1  
+        filled_baskets, total_baskets = 0, len(baskets)
+        for fruit in fruits:
+            for basket in baskets:
+                if fruit <= basket:
+                    filled_baskets += 1
+                    baskets.remove(basket)
                     break
-
-        return n - alloted
+        return total_baskets - filled_baskets
