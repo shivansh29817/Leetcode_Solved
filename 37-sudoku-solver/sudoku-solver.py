@@ -1,58 +1,42 @@
-from typing import List
-
-
 class Solution:
     def solveSudoku(self, board: List[List[str]]) -> None:
         """
         Do not return anything, modify board in-place instead.
         """
+        rows, cols = defaultdict(set), defaultdict(set)
+        grids = defaultdict(set)
 
-        def isgood(board, row, col, i):
-            for j in board[row]:
-                if j == str(i):
-                    return False
-
-            for j in range(9):
-                if board[j][col] == str(i):
-                    return False
-
-            temprow = (row // 3) * 3
-            tempcol = (col // 3) * 3
-
-            for a in range(temprow, temprow + 3):
-                for b in range(tempcol, tempcol + 3):
-                    if board[a][b] == str(i):
-                        return False
-
-            return True
-
-        dot = 0
-        for line in board:
-            for i in line:
-                if i == ".":
-                    dot += 1
-
-        def help(board, row, col):
-
-            if row == 9:
+        one_nine = set([str(i) for i in range(1, 10)])
+        fill = [] 
+        for r in range(9):
+            for c in range(9):
+                if board[r][c] != '.':
+                    rows[r].add(board[r][c])
+                    cols[c].add(board[r][c])
+                    grids[(r // 3, c // 3)].add(board[r][c])
+                else:
+                    fill.append((r, c))
+        
+        def dfs(i):
+            if i == len(fill):
                 return True
-
-            nextrow = row
-            nextcol = col
-
-            if col == 9:
-                return help(board, row + 1, 0)
-
-            if board[row][col] != ".":
-                return help(board, row, col + 1)
-
-            for i in range(1, 10):
-                if isgood(board, row, col, i):
-                    board[row][col] = str(i)
-                    if help(board, nextrow, nextcol):
-                        return True
-                    else:
-                        board[row][col] = "."
-
-        help(board, 0, 0)
-
+            r, c = fill[i]
+            options = one_nine - rows[r] - cols[c] - grids[(r // 3, c // 3)] 
+            if not options: 
+                return False
+            for op in options:
+                rows[r].add(op)
+                cols[c].add(op)
+                grids[(r // 3, c // 3)].add(op)
+                board[r][c] = op
+                if not dfs(i + 1):
+                    rows[r].remove(op)
+                    cols[c].remove(op)
+                    grids[(r // 3, c // 3)].remove(op)
+                    board[r][c] = '.'
+                else:
+                    break
+            else: 
+                return False
+            return True
+        dfs(0)
