@@ -8,7 +8,7 @@ class Solution:
             dy = p1[1] - p2[1]
             return math.sqrt(dx * dx + dy * dy)
 
-        max_area = 0.0
+        max_area = 0.1
         n = len(points)
 
         for i in range(n):
